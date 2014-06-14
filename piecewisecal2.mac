@@ -1,0 +1,111 @@
+ubdef2(knots,pcon,p,u):=block(
+[nmat,de0,de1,piecemat],
+nmat:zeromatrix(pcon,length(knots)-1),
+
+for row:1 thru pcon do
+  for col:1 thru length(knots)-1 do
+    nmat[row,col]:zeromatrix(1,length(knots)-1),
+print("OK0"),
+print(nmat),
+(for ii:1 thru length(knots)-1 do  (
+   if knots[ii+1]>knots[ii] then
+     (nmat[1,ii][ii]:1,
+      for ui:1 thru length(knots)-1 do(
+        if is (notequal(ii,ui)) then
+          nmat[1,ii][ui]:0
+      )
+     )
+   else
+     (for ui:1 thru length(knots)-1 do
+        nmat[1,ii][ui]:0))),
+print("OK1"),
+(for jj:1 thru p do
+  for ii:1 thru length(knots)-jj-1 do 
+    if is (equal(jj,1)) then
+      (de0:knots[ii+jj]-knots[ii],
+       de1:knots[ii+jj+1]-knots[ii+1],
+       (if (de0>0) then
+         de0:1/de0),
+       (if (de1>0) then
+         de1:1/de1),
+       (for ui:1 thru length(knots)-1 do
+         nmat[jj,ii,ui]:(u-knots[ii])*nmat[jj-1,ii,ui]*de0+(knots[ii+jj+1]-u)*nmat[jj-1,ii,ui]*de1
+       )
+      )
+),
+nmat);
+
+ubdef3(knots,pcon,p,u):=block(
+[nmat,de0,de1,piecemat],
+nmat:zeromatrix(pcon,length(knots)-1),
+
+for row:1 thru pcon do
+  for col:1 thru length(knots)-1 do
+    nmat[row,col]:makelist(0,x,1,length(knots)-1),
+print("OK0"),
+print(nmat),
+(for ii:1 thru length(knots)-1 do  (
+   if knots[ii+1]>knots[ii] then
+     (nmat[1,ii][ii]:1,
+      for ui:1 thru length(knots)-1 do(
+        if is (notequal(ii,ui)) then
+          nmat[1,ii][ui]:0
+      )
+     )
+   else
+     (for ui:1 thru length(knots)-1 do
+        nmat[1,ii][ui]:0))),
+print("OK1"),
+(for jj:2 thru p do
+  for ii:1 thru length(knots)-jj-1 do 
+    (de0:knots[ii+jj]-knots[ii],
+     de1:knots[ii+jj+1]-knots[ii+1],
+     (if (de0>0) then
+       de0:1/de0),
+     (if (de1>0) then
+       de1:1/de1),
+     (for ui:1 thru length(knots)-1 do
+       
+       nmat[jj,ii][ui]:nmat[jj,ii][ui]+(u-knots[ii])*nmat[jj-1,ii][ui]*de0+(knots[ii+jj+1]-u)*nmat[jj-1,ii+1][ui]*de1
+     )
+    )
+),
+nmat);
+
+
+ubdef4(knots,pcon,p,u):=block(
+[nmat,de0,de1,piecemat],
+nmat:zeromatrix(pcon,length(knots)-1),
+
+for row:1 thru pcon do
+  for col:1 thru length(knots)-1 do
+    nmat[row,col]:makelist(0,x,1,length(knots)-1),
+print("OK0"),
+print(nmat),
+(for ii:1 thru length(knots)-1 do  (
+   if knots[ii+1]>knots[ii] then
+     (nmat[1,ii][ii]:1,
+      for ui:1 thru length(knots)-1 do(
+        if is (notequal(ii,ui)) then
+          nmat[1,ii][ui]:0
+      )
+     )
+   else
+     (for ui:1 thru length(knots)-1 do
+        nmat[1,ii][ui]:0))),
+print("OK1"),
+(for jj:2 thru p do
+  for ii:1 thru length(knots)-jj do 
+    (de0:knots[ii+jj-1]-knots[ii],
+     de1:knots[ii+jj]-knots[ii+1],
+     (if (de0>0) then
+       de0:1/de0),
+     (if (de1>0) then
+       de1:1/de1),
+     (for ui:1 thru length(knots)-1 do
+       /*knots[ii+jj+1] is more than once */
+       nmat[jj,ii][ui]:nmat[jj,ii][ui]+(u-knots[ii])*nmat[jj-1,ii][ui]*de0+(knots[ii+jj]-u)*nmat[jj-1,ii+1][ui]*de1
+     )
+    )
+),
+combine(nmat));
